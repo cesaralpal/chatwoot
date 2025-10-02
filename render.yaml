@@ -15,13 +15,14 @@ services:
       - key: INSTALLATION_ENV
         value: render
       - key: FRONTEND_URL
-        value: "https://chatwoot-web.onrender.com"   # cámbialo luego por tu dominio/URL real
+        value: "https://chatwoot-web.onrender.com"  # cámbialo luego por tu URL real
       - key: DATABASE_URL
         value: "postgresql://chatwootdb:UhHffcISk9H1Mvja6LrS4it0PN5EktXS@dpg-d3cafd8gjchc7391erp0-a/chatwootdb_w8y7"
       - key: REDIS_URL
         value: "rediss://default:ATTcAAIncDJiY2ZjMjE0ODE3NzU0OGQyODMxZWEyMGIyZTM4YTFjMXAyMTM1MzI@crisp-jaybird-13532.upstash.io:6379"
       - key: SECRET_KEY_BASE
         value: "b926ea5529c267a4da5df97e4eb4ef29"
+      # --- SMTP (corrijo user con punto) ---
       - key: MAILER_SENDER_EMAIL
         value: "jcesarap1@gmail.com"
       - key: SMTP_ADDRESS
@@ -31,16 +32,15 @@ services:
       - key: SMTP_DOMAIN
         value: "gmail.com"
       - key: SMTP_USERNAME
-        value: "jcesarap1@gmail.com"   # ojo: con punto
+        value: "jcesarap1@gmail.com"
       - key: SMTP_PASSWORD
         value: "busu ramn cemd hmle"
       - key: SMTP_AUTHENTICATION
         value: "plain"
       - key: SMTP_ENABLE_STARTTLS_AUTO
         value: "true"
-    # corre migraciones antes de publicar la nueva versión
+    # corre migraciones/seeds antes de publicar
     preDeployCommand: "bundle exec rails db:chatwoot_prepare"
-    # el contenedor oficial ya trae el entrypoint correcto (puma)
 
   - type: worker
     name: chatwoot-worker
@@ -49,6 +49,8 @@ services:
       url: ghcr.io/chatwoot/chatwoot:latest
     autoDeploy: true
     envVars:
+      - key: WORKER
+        value: "1"              # esto hace que la imagen ejecute Sidekiq
       - key: RAILS_ENV
         value: production
       - key: RACK_ENV
@@ -61,7 +63,3 @@ services:
         value: "rediss://default:ATTcAAIncDJiY2ZjMjE0ODE3NzU0OGQyODMxZWEyMGIyZTM4YTFjMXAyMTM1MzI@crisp-jaybird-13532.upstash.io:6379"
       - key: SECRET_KEY_BASE
         value: "b926ea5529c267a4da5df97e4eb4ef29"
-    # el entrypoint de la imagen detecta WORKER=1 para sidekiq; fuerza sidekiq así:
-    envVars:
-      - key: WORKER
-        value: "1"
