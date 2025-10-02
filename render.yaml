@@ -14,7 +14,7 @@ services:
       - key: INSTALLATION_ENV
         value: render
       - key: FRONTEND_URL
-        value: "https://comunidadlosmochisweb.onrender.com/"
+        value: "https://<TU_SERVICIO_WEB_CHATWOOT>.onrender.com"
       - key: DATABASE_URL
         value: "postgresql://chatwootdb:UhHffcISk9H1Mvja6LrS4it0PN5EktXS@dpg-d3cafd8gjchc7391erp0-a/chatwootdb_w8y7"
       - key: REDIS_URL
@@ -35,8 +35,19 @@ services:
         value: "587"
       - key: SMTP_USERNAME
         value: "jcesarap1@gmail.com"
+      # (Opcional) S3 si vas a manejar adjuntos/imagenes en producción
+      # - key: ACTIVE_STORAGE_SERVICE
+      #   value: amazon
+      # - key: AWS_ACCESS_KEY_ID
+      #   sync: false
+      # - key: AWS_SECRET_ACCESS_KEY
+      #   sync: false
+      # - key: AWS_REGION
+      #   value: us-east-1
+      # - key: AWS_BUCKET
+      #   value: tu-bucket
     preDeployCommand: "bundle exec rails db:chatwoot_prepare"
-    startCommand: "bundle exec puma -C config/puma.rb -e production -p ${PORT}"
+    dockerCommand: "bundle exec puma -C config/puma.rb -e production -p ${PORT}"
 
   - type: worker
     name: chatwoot-worker
@@ -56,4 +67,12 @@ services:
         value: "rediss://default:ATTcAAIncDJiY2ZjMjE0ODE3NzU0OGQyODMxZWEyMGIyZTM4YTFjMXAyMTM1MzI@crisp-jaybird-13532.upstash.io:6379"
       - key: SECRET_KEY_BASE
         value: "b926ea5529c267a4da5df97e4eb4ef29"
-    startCommand: "bundle exec sidekiq -C config/sidekiq.yml"
+    dockerCommand: "bundle exec sidekiq -C config/sidekiq.yml"
+
+databases:
+  - name: chatwoot-postgres
+    databaseName: chatwoot
+    user: chatwoot
+
+redis:
+  - name: chatwoot-redis
