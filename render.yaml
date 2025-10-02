@@ -1,8 +1,9 @@
 services:
   - type: web
     name: chatwoot-web
-    runtime: docker
-    dockerfilePath: ./Dockerfile
+    runtime: image
+    image:
+      url: ghcr.io/chatwoot/chatwoot:latest
     autoDeploy: true
     envVars:
       - key: RAILS_ENV
@@ -14,7 +15,7 @@ services:
       - key: INSTALLATION_ENV
         value: render
       - key: FRONTEND_URL
-        value: "https://comunidadlosmochisweb.onrender.com"
+        value: "https://chatwoot-web.onrender.com"   # cámbialo luego por tu dominio/URL real
       - key: DATABASE_URL
         value: "postgresql://chatwootdb:UhHffcISk9H1Mvja6LrS4it0PN5EktXS@dpg-d3cafd8gjchc7391erp0-a/chatwootdb_w8y7"
       - key: REDIS_URL
@@ -25,23 +26,27 @@ services:
         value: "jcesarap1@gmail.com"
       - key: SMTP_ADDRESS
         value: "smtp.gmail.com"
-      - key: SMTP_DOMAIN
-        value: "gmail.com"
-      - key: SMTP_ENABLE_STARTTLS_AUTO
-        value: "true"
-      - key: SMTP_PASSWORD
-        value: "busu ramn cemd hmle"
       - key: SMTP_PORT
         value: "587"
+      - key: SMTP_DOMAIN
+        value: "gmail.com"
       - key: SMTP_USERNAME
-        value: "jcesarap1@gmailcom"
+        value: "jcesarap1@gmail.com"   # ojo: con punto
+      - key: SMTP_PASSWORD
+        value: "busu ramn cemd hmle"
+      - key: SMTP_AUTHENTICATION
+        value: "plain"
+      - key: SMTP_ENABLE_STARTTLS_AUTO
+        value: "true"
+    # corre migraciones antes de publicar la nueva versión
     preDeployCommand: "bundle exec rails db:chatwoot_prepare"
-    dockerCommand: "bundle exec puma -C config/puma.rb -e production -p ${PORT}"
+    # el contenedor oficial ya trae el entrypoint correcto (puma)
 
   - type: worker
     name: chatwoot-worker
-    runtime: docker
-    dockerfilePath: ./Dockerfile
+    runtime: image
+    image:
+      url: ghcr.io/chatwoot/chatwoot:latest
     autoDeploy: true
     envVars:
       - key: RAILS_ENV
@@ -56,4 +61,7 @@ services:
         value: "rediss://default:ATTcAAIncDJiY2ZjMjE0ODE3NzU0OGQyODMxZWEyMGIyZTM4YTFjMXAyMTM1MzI@crisp-jaybird-13532.upstash.io:6379"
       - key: SECRET_KEY_BASE
         value: "b926ea5529c267a4da5df97e4eb4ef29"
-    dockerCommand: "bundle exec sidekiq -C config/sidekiq.yml"
+    # el entrypoint de la imagen detecta WORKER=1 para sidekiq; fuerza sidekiq así:
+    envVars:
+      - key: WORKER
+        value: "1"
