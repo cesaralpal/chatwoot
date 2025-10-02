@@ -3,7 +3,7 @@ services:
     name: chatwoot-web
     runtime: image
     image:
-      url: ghcr.io/chatwoot/chatwoot:latest
+      url: docker.io/chatwoot/chatwoot:4.6.0
     autoDeploy: true
     envVars:
       - key: RAILS_ENV
@@ -45,7 +45,7 @@ services:
     name: chatwoot-worker
     runtime: image
     image:
-      url: ghcr.io/chatwoot/chatwoot:latest
+      url: docker.io/chatwoot/chatwoot:4.6.0
     autoDeploy: true
     envVars:
       - key: WORKER
