@@ -23,6 +23,7 @@ services:
         fromService:
           name: chatwoot-redis
           type: redis
+          property: connectionString
       - key: SECRET_KEY_BASE
         sync: false
       - key: MAILER_SENDER_EMAIL
@@ -39,17 +40,6 @@ services:
         value: "587"
       - key: SMTP_USERNAME
         sync: false
-      # Si usarás S3 para adjuntos, descomenta y completa:
-      # - key: ACTIVE_STORAGE_SERVICE
-      #   value: amazon
-      # - key: AWS_ACCESS_KEY_ID
-      #   sync: false
-      # - key: AWS_SECRET_ACCESS_KEY
-      #   sync: false
-      # - key: AWS_REGION
-      #   value: us-east-1
-      # - key: AWS_BUCKET
-      #   value: tu-bucket
     preDeployCommand: "bundle exec rails db:chatwoot_prepare"
     dockerCommand: "bundle exec puma -C config/puma.rb -e production -p ${PORT}"
 
@@ -73,15 +63,16 @@ services:
         fromService:
           name: chatwoot-redis
           type: redis
+          property: connectionString
       - key: SECRET_KEY_BASE
         sync: false
     dockerCommand: "bundle exec sidekiq -C config/sidekiq.yml"
 
   - type: redis
     name: chatwoot-redis
-    ipAllowList: []   # deja vacío si no quieres restringir IPs
+    ipAllowList: []
 
 databases:
   - name: chatwoot-postgres
-    databaseName: chatwoot
-    user: chatwoot
+    databaseName: chatwoot-db
+    user: chatwootdb
