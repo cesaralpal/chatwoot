@@ -14,20 +14,15 @@ services:
       - key: INSTALLATION_ENV
         value: render
       - key: FRONTEND_URL
-        value: "https://<TU_SERVICIO_WEB_CHATWOOT>.onrender.com"
+        value: "https://comunidadlosmochisweb.onrender.com"
       - key: DATABASE_URL
-        fromDatabase:
-          name: chatwoot-postgres
-          property: connectionString
+        value: "postgresql://chatwootdb:UhHffcISk9H1Mvja6LrS4it0PN5EktXS@dpg-d3cafd8gjchc7391erp0-a/chatwootdb_w8y7"
       - key: REDIS_URL
-        fromService:
-          name: chatwoot-redis
-          type: redis
-          property: connectionString
+        value: "rediss://default:ATTcAAIncDJiY2ZjMjE0ODE3NzU0OGQyODMxZWEyMGIyZTM4YTFjMXAyMTM1MzI@crisp-jaybird-13532.upstash.io:6379"
       - key: SECRET_KEY_BASE
-        sync: false
+        value: "b926ea5529c267a4da5df97e4eb4ef29"
       - key: MAILER_SENDER_EMAIL
-        sync: false
+        value: "jcesarap1@gmail.com"
       - key: SMTP_ADDRESS
         value: "smtp.gmail.com"
       - key: SMTP_DOMAIN
@@ -35,11 +30,11 @@ services:
       - key: SMTP_ENABLE_STARTTLS_AUTO
         value: "true"
       - key: SMTP_PASSWORD
-        sync: false
+        value: "busu ramn cemd hmle"
       - key: SMTP_PORT
         value: "587"
       - key: SMTP_USERNAME
-        sync: false
+        value: "jcesarap1@gmailcom"
     preDeployCommand: "bundle exec rails db:chatwoot_prepare"
     dockerCommand: "bundle exec puma -C config/puma.rb -e production -p ${PORT}"
 
@@ -56,23 +51,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: chatwoot-postgres
-          property: connectionString
+        value: "postgresql://chatwootdb:UhHffcISk9H1Mvja6LrS4it0PN5EktXS@dpg-d3cafd8gjchc7391erp0-a/chatwootdb_w8y7"
       - key: REDIS_URL
-        fromService:
-          name: chatwoot-redis
-          type: redis
-          property: connectionString
+        value: "rediss://default:ATTcAAIncDJiY2ZjMjE0ODE3NzU0OGQyODMxZWEyMGIyZTM4YTFjMXAyMTM1MzI@crisp-jaybird-13532.upstash.io:6379"
       - key: SECRET_KEY_BASE
-        sync: false
+        value: "b926ea5529c267a4da5df97e4eb4ef29"
     dockerCommand: "bundle exec sidekiq -C config/sidekiq.yml"
-
-  - type: redis
-    name: chatwoot-redis
-    ipAllowList: []
-
-databases:
-  - name: chatwoot-postgres
-    databaseName: chatwoot-db
-    user: chatwootdb
