@@ -16,13 +16,17 @@ services:
       - key: FRONTEND_URL
         value: "https://<TU_SERVICIO_WEB_CHATWOOT>.onrender.com"
       - key: DATABASE_URL
-        value: "postgresql://chatwootdb:UhHffcISk9H1Mvja6LrS4it0PN5EktXS@dpg-d3cafd8gjchc7391erp0-a/chatwootdb_w8y7"
+        fromDatabase:
+          name: chatwoot-postgres
+          property: connectionString
       - key: REDIS_URL
-        value: "rediss://default:ATTcAAIncDJiY2ZjMjE0ODE3NzU0OGQyODMxZWEyMGIyZTM4YTFjMXAyMTM1MzI@crisp-jaybird-13532.upstash.io:6379"
+        fromService:
+          name: chatwoot-redis
+          type: redis
       - key: SECRET_KEY_BASE
-        value: "b926ea5529c267a4da5df97e4eb4ef29"
+        sync: false
       - key: MAILER_SENDER_EMAIL
-        value: "jcesarap1@gmail.com"
+        sync: false
       - key: SMTP_ADDRESS
         value: "smtp.gmail.com"
       - key: SMTP_DOMAIN
@@ -30,12 +34,12 @@ services:
       - key: SMTP_ENABLE_STARTTLS_AUTO
         value: "true"
       - key: SMTP_PASSWORD
-        value: "busu ramn cemd hmle"
+        sync: false
       - key: SMTP_PORT
         value: "587"
       - key: SMTP_USERNAME
-        value: "jcesarap1@gmail.com"
-      # (Opcional) S3 si vas a manejar adjuntos/imagenes en producción
+        sync: false
+      # Si usarás S3 para adjuntos, descomenta y completa:
       # - key: ACTIVE_STORAGE_SERVICE
       #   value: amazon
       # - key: AWS_ACCESS_KEY_ID
@@ -62,17 +66,22 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        value: "postgresql://chatwootdb:UhHffcISk9H1Mvja6LrS4it0PN5EktXS@dpg-d3cafd8gjchc7391erp0-a/chatwootdb_w8y7"
+        fromDatabase:
+          name: chatwoot-postgres
+          property: connectionString
       - key: REDIS_URL
-        value: "rediss://default:ATTcAAIncDJiY2ZjMjE0ODE3NzU0OGQyODMxZWEyMGIyZTM4YTFjMXAyMTM1MzI@crisp-jaybird-13532.upstash.io:6379"
+        fromService:
+          name: chatwoot-redis
+          type: redis
       - key: SECRET_KEY_BASE
-        value: "b926ea5529c267a4da5df97e4eb4ef29"
+        sync: false
     dockerCommand: "bundle exec sidekiq -C config/sidekiq.yml"
+
+  - type: redis
+    name: chatwoot-redis
+    ipAllowList: []   # deja vacío si no quieres restringir IPs
 
 databases:
   - name: chatwoot-postgres
     databaseName: chatwoot
     user: chatwoot
-
-redis:
-  - name: chatwoot-redis
